@@ -1,5 +1,6 @@
 package com.destroystokyo.paper.event.brigadier;
 
+import com.destroystokyo.paper.brigadier.BukkitBrigadierCommandSource;
 import com.mojang.brigadier.tree.RootCommandNode;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,22 +18,22 @@ import org.jetbrains.annotations.NotNull;
  * other plugins yet.
  *
  * WARNING: This event will potentially (and most likely) fire twice! Once for Async, and once again for Sync.
- * It is important that you check event.isAsync() and event.hasFiredAsync() to ensure you only act once.
+ * It is important that you check event.isAsynchronous() and event.hasFiredAsync() to ensure you only act once.
  * If for some reason we are unable to send this asynchronously in the future, only the sync method will fire.
  *
  * Your logic should look like this:
- * if (event.isAsync() || (!event.isAsync() && !event.hasFiredAsync())) { do stuff }
+ * if (event.isAsynchronous() || !event.hasFiredAsync()) { do stuff }
  *
  * If your logic is not safe to run asynchronously, only react to the synchronous version.
  * @deprecated Draft API - Subject to change until confirmed solves desired use cases
  */
-public class AsyncPlayerSendCommandsEvent extends PlayerEvent {
+public class AsyncPlayerSendCommandsEvent <S extends BukkitBrigadierCommandSource> extends PlayerEvent {
 
     private static final HandlerList handlers = new HandlerList();
-    private final RootCommandNode node;
+    private final RootCommandNode<S> node;
     private final boolean hasFiredAsync;
 
-    public AsyncPlayerSendCommandsEvent(Player player, RootCommandNode node, boolean hasFiredAsync) {
+    public AsyncPlayerSendCommandsEvent(Player player, RootCommandNode<S> node, boolean hasFiredAsync) {
         super(player, !Bukkit.isPrimaryThread());
         this.node = node;
         this.hasFiredAsync = hasFiredAsync;
@@ -41,7 +42,7 @@ public class AsyncPlayerSendCommandsEvent extends PlayerEvent {
     /**
      * @return The full Root Command Node being sent to the client, which is mutable.
      */
-    public RootCommandNode getCommandNode() {
+    public RootCommandNode<S> getCommandNode() {
         return node;
     }
 

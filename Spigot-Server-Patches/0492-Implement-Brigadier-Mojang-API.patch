@@ -1,4 +1,4 @@
-From b8f38d34332fb8271b690dc44748f9dd30a2a181 Mon Sep 17 00:00:00 2001
+From 15724f273eab85514b00ec191b4fba4d73832da4 Mon Sep 17 00:00:00 2001
 From: Aikar <aikar@aikar.co>
 Date: Sun, 19 Apr 2020 18:15:29 -0400
 Subject: [PATCH] Implement Brigadier Mojang API
@@ -10,14 +10,14 @@ Adds CommandRegisteredEvent
   - Allows manipulating the CommandNode to add more children/metadata for the client
 
 diff --git a/src/main/java/net/minecraft/server/CommandDispatcher.java b/src/main/java/net/minecraft/server/CommandDispatcher.java
-index 2414b0a552..6deba313b2 100644
+index 2414b0a552..2d512aa4f9 100644
 --- a/src/main/java/net/minecraft/server/CommandDispatcher.java
 +++ b/src/main/java/net/minecraft/server/CommandDispatcher.java
 @@ -267,6 +267,7 @@ public class CommandDispatcher {
              bukkit.add(node.getName());
          }
          // Paper start - Async command map building
-+        new com.destroystokyo.paper.event.brigadier.AsyncPlayerSendCommandsEvent(entityplayer.getBukkitEntity(), rootcommandnode, false).callEvent(); // Paper
++        new com.destroystokyo.paper.event.brigadier.AsyncPlayerSendCommandsEvent<CommandListenerWrapper>(entityplayer.getBukkitEntity(), (RootCommandNode) rootcommandnode, false).callEvent(); // Paper
          MinecraftServer.getServer().execute(() -> {
             runSync(entityplayer, bukkit, rootcommandnode);
          });
@@ -25,7 +25,7 @@ index 2414b0a552..6deba313b2 100644
  
      private void runSync(EntityPlayer entityplayer, Collection<String> bukkit, RootCommandNode<ICompletionProvider> rootcommandnode) {
          // Paper end - Async command map building
-+        new com.destroystokyo.paper.event.brigadier.AsyncPlayerSendCommandsEvent(entityplayer.getBukkitEntity(), rootcommandnode, true).callEvent(); // Paper
++        new com.destroystokyo.paper.event.brigadier.AsyncPlayerSendCommandsEvent<CommandListenerWrapper>(entityplayer.getBukkitEntity(), (RootCommandNode) rootcommandnode, false).callEvent(); // Paper
          PlayerCommandSendEvent event = new PlayerCommandSendEvent(entityplayer.getBukkitEntity(), new LinkedHashSet<>(bukkit));
          event.getPlayer().getServer().getPluginManager().callEvent(event);
  
