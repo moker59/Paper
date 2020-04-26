@@ -20,6 +20,6 @@ deploy:
   api_key: $GH_TOKEN
   file_glob: true
   file:
-    - "*/target/*.jar"
+    - "./*.jar"
   on:
     tags: true
