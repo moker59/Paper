@@ -1,6 +1,7 @@
 language: java
 jdk:
   - oraclejdk8
+  - oraclejdk11
 before_install:
   - git config --global user.email "travis-ci@destroystokyo.com"
   - git config --global user.name "Travis CI"
@@ -15,3 +16,12 @@ cache:
   directories:
     - '$HOME/.m2/repository'
     - 'work'
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key: $GH_TOKEN
+  file_glob: true
+  file:
+    - "./*.jar"
+  on:
+    tags: true
