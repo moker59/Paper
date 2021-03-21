@@ -6,7 +6,7 @@ before_install:
   - git config --global user.email "travis-ci@destroystokyo.com"
   - git config --global user.name "Travis CI"
   - git submodule update --init
-  - ./remap.sh
+  - bash -x ./remap.sh
   - ./decompile.sh
   - ./init.sh
   - ./newApplyPatches.sh
